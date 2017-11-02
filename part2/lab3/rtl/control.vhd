@@ -39,7 +39,7 @@ end control;
 
 architecture Behavioral of control is
   
-  type state_type is (s0, s1, s2, s3);
+  type state_type is (s0, s1, s2, s3, s4);
   signal state   : state_type;
   
 begin
@@ -62,7 +62,7 @@ begin
         when s1 =>
           if (start = '1') then
             if ((enc_1_ready = '1') and (enc_2_ready = '1')) then
-              state <= s2;
+              state <= s4;
             else
               state <= s1;
             end if;
@@ -83,7 +83,10 @@ begin
           end if;
           
         when s3 =>
-          state <= s0;
+          state <= s2;
+
+        when s4 =>
+          state <= s2;
           
       end case;
     end if;
@@ -108,9 +111,17 @@ begin
         store_data_1   <= '0';
         store_data_2   <= '0';
         system_ready   <= '0';
-      when s2 =>
+      when s4 =>
         enc_1_start    <= '0';
         enc_2_start    <= '0';
+        dec_1_start    <= '0';
+        dec_2_start    <= '0';
+        store_data_1   <= '0';
+        store_data_2   <= '0';
+        system_ready   <= '0';
+      when s2 =>
+        enc_1_start    <= '1';
+        enc_2_start    <= '1';
         dec_1_start    <= '1';
         dec_2_start    <= '1';
         store_data_1   <= '1';

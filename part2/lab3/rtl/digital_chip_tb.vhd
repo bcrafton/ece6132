@@ -109,7 +109,13 @@ begin
     if (signature_out = signature_in) then
       report "Test case 1 successful, No Trojan As Expected" severity note;
     else
-      report "Test case 1 failed" severity error;
+       report "Test case 1 failed" severity note;
+       for i in 0 to signature_in'LENGTH-1 loop
+            -- report std_logic'image(signature_in(i));
+       end loop;
+       for i in 0 to signature_out'LENGTH-1 loop
+            -- report std_logic'image(signature_out(i));
+       end loop;
     end if;
     
     start        <= '0';
@@ -130,9 +136,15 @@ begin
     wait until system_ready = '1' and clk = '0';
     
     if (signature_out /= signature_in) then
-      report "Test case 2 successful, Trojan Detected As Expected" severity note;
+      report "Test case 2 successful, No Trojan As Expected" severity note;
     else
-      report "Test case 2 failed" severity error;
+       report "Test case 2 failed" severity note;
+       for i in 0 to signature_in'LENGTH-1 loop
+            -- report std_logic'image(signature_in(i));
+       end loop;
+       for i in 0 to signature_out'LENGTH-1 loop
+            -- report std_logic'image(signature_out(i));
+       end loop;
     end if;
     
     start        <= '0';
@@ -155,7 +167,13 @@ begin
     if (signature_out = signature_in) then
       report "Test case 3 successful, No Trojan As Expected" severity note;
     else
-      report "Test case 3 failed" severity error;
+       report "Test case 3 failed" severity note;
+       for i in 0 to signature_in'LENGTH-1 loop
+            -- report std_logic'image(signature_in(i));
+       end loop;
+       for i in 0 to signature_out'LENGTH-1 loop
+            -- report std_logic'image(signature_out(i));
+       end loop;
     end if;
     
     start        <= '0';
@@ -174,11 +192,17 @@ begin
     signature_in <= X"000A";
     
     wait until system_ready = '1' and clk = '0';
-    
+
     if (signature_out = signature_in) then
       report "Test case 4 successful, No Trojan As Expected" severity note;
     else
-      report "Test case 4 failed" severity error;
+       report "Test case 4 failed" severity note;
+       for i in 0 to signature_in'LENGTH-1 loop
+            -- report std_logic'image(signature_in(i));
+       end loop;
+       for i in 0 to signature_out'LENGTH-1 loop
+            -- report std_logic'image(signature_out(i));
+       end loop;
     end if;
     
     start        <= '0';

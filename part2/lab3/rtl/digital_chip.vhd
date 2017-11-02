@@ -164,6 +164,12 @@ architecture Structural of digital_chip is
   signal signature_1                  : std_logic_vector(15 downto 0);
   signal comparator_output            : std_logic;
 
+  signal key_reg1                     : std_logic_vector(79 downto 0);
+  signal ready1                       : std_logic;
+
+  signal key_reg2                     : std_logic_vector(79 downto 0);
+  signal ready2                       : std_logic;
+
 begin
   
   cntl : control port map (
@@ -196,11 +202,17 @@ begin
     ready      => enc_1_ready
   );
   
+process (clk) begin
+if (enc_1_ready = '1') then
   decryption_input_1 <= encryption_output_1;
+  key_reg1 <= key_gen_output_1;
+  ready1 <= enc_1_ready;
+end if ;
+end process;
 
   dec_1 : PresentDec port map(
     plaintext	=> decryption_input_1,
-    key		    => key_gen_output_1,
+    key		=> key_reg1,
     ciphertext	=> decryption_output_1,
     start       => dec_1_start,
     clk	        => clk,
@@ -228,11 +240,17 @@ begin
     ready      => enc_2_ready
   );
   
+process (clk) begin
+if (enc_2_ready = '1') then
   decryption_input_2 <= encryption_output_2;
+  key_reg2 <= key_gen_output_2;
+  ready2 <= enc_2_ready;
+end if;
+end process;
 
   dec_2 : PresentDec port map(
     plaintext	=> decryption_input_2,
-    key		    => key_gen_output_2,
+    key		=> key_reg2,
     ciphertext	=> decryption_output_2,
     start       => dec_2_start,
     clk	        => clk,
