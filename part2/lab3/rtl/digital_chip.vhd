@@ -32,7 +32,8 @@ entity digital_chip is
     system_ready         : out std_logic;
     encrypted_BCG_HF_out : out std_logic_vector(63 downto 0);
     encrypted_BCG_DV_out : out std_logic_vector(63 downto 0);
-    signature_out        : out std_logic_vector(15 downto 0)
+    signature_out        : out std_logic_vector(15 downto 0);
+    ready                : out std_logic
   );
 end digital_chip;
 
@@ -211,8 +212,8 @@ end if ;
 end process;
 
   dec_1 : PresentDec port map(
-    plaintext	=> decryption_input_1,
-    key		=> key_reg1,
+    plaintext	=> encryption_output_1,
+    key		=> key_gen_output_1,
     ciphertext	=> decryption_output_1,
     start       => dec_1_start,
     clk	        => clk,
@@ -249,8 +250,8 @@ end if;
 end process;
 
   dec_2 : PresentDec port map(
-    plaintext	=> decryption_input_2,
-    key		=> key_reg2,
+    plaintext	=> encryption_output_2,
+    key		=> key_gen_output_2,
     ciphertext	=> decryption_output_2,
     start       => dec_2_start,
     clk	        => clk,
@@ -304,5 +305,11 @@ end process;
     data2_out         => encrypted_BCG_DV_out,
     sig_out           => signature_out
   );
+
+process (clk) begin
+  -- ready <= enc_1_ready and enc_2_ready;
+end process;
+
+  ready <= enc_1_ready and enc_2_ready;
   
 end Structural;

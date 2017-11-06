@@ -60,27 +60,19 @@ begin
           
         -- performing encryption
         when s1 =>
-          if (start = '1') then
             if ((enc_1_ready = '1') and (enc_2_ready = '1')) then
               state <= s4;
             else
               state <= s1;
             end if;
-          else
-            state <= s0;
-          end if;
         
         -- performing decryption
         when s2 =>
-          if (start = '1') then
             if ((dec_1_ready = '1') and (dec_2_ready = '1')) then
               state <= s3;
             else
               state <= s2;
             end if;
-          else
-            state <= s0;
-          end if;
           
         when s3 =>
           state <= s2;

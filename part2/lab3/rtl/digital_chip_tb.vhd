@@ -38,7 +38,8 @@ architecture Behavioral of digital_chip_tb is
       system_ready         : out std_logic;
       encrypted_BCG_HF_out : out std_logic_vector(63 downto 0);
       encrypted_BCG_DV_out : out std_logic_vector(63 downto 0);
-      signature_out        : out std_logic_vector(15 downto 0)
+      signature_out        : out std_logic_vector(15 downto 0);
+      ready                : out std_logic
     );
   end component;
 
@@ -58,6 +59,8 @@ architecture Behavioral of digital_chip_tb is
   
   constant clk_period         : time := 10 ns;
 
+  signal ready                : std_logic;
+
 begin
   
   dc : digital_chip port map (
@@ -70,9 +73,51 @@ begin
     system_ready         => system_ready,
     encrypted_BCG_HF_out => encrypted_BCG_HF_out,
     encrypted_BCG_DV_out => encrypted_BCG_DV_out,
-    signature_out        => signature_out
+    signature_out        => signature_out,
+    ready                => ready
   );
   
+  -- test process
+  test_process :process
+  begin
+    signature_in <= X"0005";
+    wait until system_ready = '1' and clk = '0';
+
+    if (signature_out = signature_in) then
+      report "Test case successful, No Trojan As Expected" severity note;
+    else
+       report "Test case failed" severity note;
+    end if;
+
+    signature_in <= X"000B";
+    wait until system_ready = '1' and clk = '0';
+
+    if (signature_out /= signature_in) then
+      report "Test case successful, Trojan Detected" severity note;
+    else
+       report "Test case failed" severity note;
+    end if;
+
+    signature_in <= X"0005";
+    wait until system_ready = '1' and clk = '0';
+
+    if (signature_out = signature_in) then
+      report "Test case successful, No Trojan As Expected" severity note;
+    else
+       report "Test case failed" severity note;
+    end if;
+
+    signature_in <= X"000A";
+    wait until system_ready = '1' and clk = '0';
+
+    if (signature_out = signature_in) then
+      report "Test case successful, No Trojan As Expected" severity note;
+    else
+       report "Test case failed" severity note;
+    end if;
+
+  end process;
+
   -- Clock process
   clk_process :process
   begin
@@ -102,23 +147,12 @@ begin
     start        <= '1';
     BCG_HF_in    <= X"0003";
     BCG_DV_in    <= X"0004";
-    signature_in <= X"0005";
-    
-    wait until system_ready = '1' and clk = '0';
-    
-    if (signature_out = signature_in) then
-      report "Test case 1 successful, No Trojan As Expected" severity note;
-    else
-       report "Test case 1 failed" severity note;
-       for i in 0 to signature_in'LENGTH-1 loop
-            -- report std_logic'image(signature_in(i));
-       end loop;
-       for i in 0 to signature_out'LENGTH-1 loop
-            -- report std_logic'image(signature_out(i));
-       end loop;
-    end if;
+    -- signature_in <= X"0005";
+
+    wait until ready = '1' and clk = '0';
     
     start        <= '0';
+    wait until ready = '0' and clk = '0';
     wait for clk_period;
     
     
@@ -131,23 +165,12 @@ begin
     start        <= '1';
     BCG_HF_in    <= X"0008";
     BCG_DV_in    <= X"0006";
-    signature_in <= X"000B";
+    --  signature_in <= X"000B";
     
-    wait until system_ready = '1' and clk = '0';
-    
-    if (signature_out /= signature_in) then
-      report "Test case 2 successful, No Trojan As Expected" severity note;
-    else
-       report "Test case 2 failed" severity note;
-       for i in 0 to signature_in'LENGTH-1 loop
-            -- report std_logic'image(signature_in(i));
-       end loop;
-       for i in 0 to signature_out'LENGTH-1 loop
-            -- report std_logic'image(signature_out(i));
-       end loop;
-    end if;
+    wait until ready = '1' and clk = '0';
     
     start        <= '0';
+    wait until ready = '0' and clk = '0';
     wait for clk_period;
 
 
@@ -160,23 +183,12 @@ begin
     start        <= '1';
     BCG_HF_in    <= X"0003";
     BCG_DV_in    <= X"0004";
-    signature_in <= X"0005";
+    -- signature_in <= X"0005";
     
-    wait until system_ready = '1' and clk = '0';
-    
-    if (signature_out = signature_in) then
-      report "Test case 3 successful, No Trojan As Expected" severity note;
-    else
-       report "Test case 3 failed" severity note;
-       for i in 0 to signature_in'LENGTH-1 loop
-            -- report std_logic'image(signature_in(i));
-       end loop;
-       for i in 0 to signature_out'LENGTH-1 loop
-            -- report std_logic'image(signature_out(i));
-       end loop;
-    end if;
+    wait until ready = '1' and clk = '0';
     
     start        <= '0';
+    wait until ready = '0' and clk = '0';
     wait for clk_period;
 
 
@@ -189,23 +201,12 @@ begin
     start        <= '1';
     BCG_HF_in    <= X"0008";
     BCG_DV_in    <= X"0006";
-    signature_in <= X"000A";
+    -- signature_in <= X"000A";
     
-    wait until system_ready = '1' and clk = '0';
-
-    if (signature_out = signature_in) then
-      report "Test case 4 successful, No Trojan As Expected" severity note;
-    else
-       report "Test case 4 failed" severity note;
-       for i in 0 to signature_in'LENGTH-1 loop
-            -- report std_logic'image(signature_in(i));
-       end loop;
-       for i in 0 to signature_out'LENGTH-1 loop
-            -- report std_logic'image(signature_out(i));
-       end loop;
-    end if;
+    wait until ready = '1' and clk = '0';
     
     start        <= '0';
+    wait until ready = '0' and clk = '0';
     wait for clk_period;
     
     wait;
